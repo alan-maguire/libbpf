@@ -562,7 +562,9 @@ struct btf_field_desc {
 	/* member struct size, or zero, if no members */
 	int m_sz;
 	/* repeated per-member offsets */
-	int m_off_cnt, m_offs[1];
+	int m_off_cnt, m_offs[2];
+	/* singular entity size after btf_type, if any */
+	int s_sz;
 };
 
 struct btf_field_iter {
@@ -716,6 +718,13 @@ struct bpf_link * usdt_manager_attach_usdt(struct usdt_manager *man,
 					   pid_t pid, const char *path,
 					   const char *usdt_provider, const char *usdt_name,
 					   __u64 usdt_cookie);
+
+struct loc_manager *loc_manager_new(struct bpf_object *obj);
+void loc_manager_free(struct loc_manager *man);
+struct bpf_link *loc_manager_attach_kloc(struct loc_manager *man,
+					 const struct bpf_program *prog,
+					 const char *loc_mod, const char *loc_name,
+					 __u64 loc_cookie);
 
 static inline bool is_pow_of_2(size_t x)
 {
